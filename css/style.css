@@ -957,50 +957,143 @@ video {
 }
 /* start inv  */
 .sec {
-    padding-top: var(--pad);
-    padding-bottom: var(--pad);
+    padding: calc(var(--pad) * 0.8) 20px;
 }
-@media (min-width: 768px){
-    .sec .invcont{
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(450px , 1fr));
-        grid-column-gap: 90px;
-        grid-row-gap: 60px;
-        padding-left: 30px;
+
+.sec .invcont {
+    display: grid;
+    gap: 40px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sec .box {
+    background: rgba(155, 0, 0, 0.05);
+    border-radius: 15px;
+    padding: 30px;
+    display: flex;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.sec .box:hover {
+    transform: translateY(-5px);
+    border-color: var(--main);
+    background: rgba(155, 0, 0, 0.1);
+    box-shadow: 0 10px 20px rgba(155, 0, 0, 0.1);
+}
+
+.sec .box i {
+    font-size: 40px;
+    color: var(--main);
+    margin-right: 30px;
+    padding: 15px;
+    background: rgba(155, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    min-width: 70px;
+    text-align: center;
+}
+
+.sec .box:hover i {
+    transform: scale(1.1) rotate(5deg);
+    background: var(--main);
+    color: white;
+}
+
+.sec .box .text {
+    flex: 1;
+}
+
+.sec .box h3 {
+    margin-bottom: 15px;
+    color: var(--main);
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.sec .box p {
+    line-height: 1.8;
+    color: #bababa;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Responsive Styles */
+@media (min-width: 1200px) {
+    .sec .invcont {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 60px;
     }
-        
 }
-@media (max-width: 768px){
-    .sec .box{
-        display: flex;
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    .sec .invcont {
+        grid-template-columns: 1fr;
+        max-width: 800px;
+    }
+    
+    .sec .box {
+        padding: 25px;
+    }
+}
+
+@media (max-width: 767px) {
+    .sec {
+        padding: calc(var(--pad) * 0.6) 15px;
+    }
+
+    .sec .invcont {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .sec .box {
         flex-direction: column;
         text-align: center;
-        margin-bottom: 40px;
+        padding: 25px 20px;
     }
-    .sec .box i{
-        margin: 0 0 20px;
-        align-self: center;
-        width: 0;
-
+    
+    .sec .box i {
+        margin: 0 auto 20px;
+        font-size: 35px;
     }
-        
+    
+    .sec .box h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .sec .box p {
+        font-size: 15px;
+        line-height: 1.6;
+    }
 }
-.sec .box {
-    display: flex;
 
-}
-.sec .box i {
-    margin-right: 50px;
-    font-size: 40px;
-    color: whitesmoke;
-}
-.sec .box p{
-    line-height: 2;
-    color: #bababa;
-}
-.sec .box h3{
-    margin-bottom: 30px;
-    color: var(--main);
+@media (max-width: 480px) {
+    .sec {
+        padding: calc(var(--pad) * 0.5) 12px;
+    }
+    
+    .sec .box {
+        padding: 20px 15px;
+    }
+    
+    .sec .box i {
+        font-size: 30px;
+        padding: 12px;
+        min-width: 60px;
+    }
+    
+    .sec .box h3 {
+        font-size: 18px;
+    }
+    
+    .sec .box p {
+        font-size: 14px;
+    }
 }
 /* end inv  */
 /* start des  */
