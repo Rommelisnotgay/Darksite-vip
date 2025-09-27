@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="The Vip Pass">
+        <title>DarkSite | VIP PASS</title>
+        <link rel="icon" type="image/x-icon" href="image/favicon.ico">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Header Functions
+                const header = document.querySelector('header');
+                const toggleMenu = document.querySelector('.toggle-menu');
+                const nav = document.querySelector('nav ul');
+                const navLinks = document.querySelectorAll('nav ul li a');
+                const searchIcon = document.querySelector('.form i');
+                
+                // Toggle mobile menu
+                toggleMenu.addEventListener('click', () => {
+                    nav.classList.toggle('show');
+                    toggleMenu.classList.toggle('fa-times');
+                });
+
+                // Handle navigation links
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        // Remove active class from all links
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        
+                        // Add active class to clicked link
+                        this.classList.add('active');
+                        
+                        // Close mobile menu if open
+                        nav.classList.remove('show');
+                        toggleMenu.classList.remove('fa-times');
+
+                        // Smooth scroll to section
+                        if(this.getAttribute('href') !== '#') {
+                            e.preventDefault();
+                            const targetId = this.getAttribute('href');
+                            const targetSection = document.querySelector(targetId);
+                            if(targetSection) {
+                                targetSection.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }
+                    });
+                });
+
+                // Header scroll effect and active section highlighting
+                let lastScroll = 0;
+                const sections = document.querySelectorAll('section, .landing, .sec, .des, .ask-me, .pricing, .contact');
+                
+                function setActiveNavLink() {
+                    const currentScroll = window.pageYOffset;
+                    
+                    // Add/remove header background based on scroll
+                    if(currentScroll > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                    
+                    // Hide/show header based on scroll direction
+                    if(currentScroll > lastScroll && currentScroll > 200) {
+                        header.style.transform = 'translateY(-100%)';
+                    } else {
+                        header.style.transform = 'translateY(0)';
+                    }
+                    
+                    lastScroll = currentScroll;
+
+                    // Update active navigation link based on scroll position
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop - 100;
+                        const sectionHeight = section.offsetHeight;
+                        const id = section.getAttribute('id');
+                        
+                        if (currentScroll >= sectionTop && currentScroll < sectionTop + sectionHeight) {
+                            navLinks.forEach(link => {
+                                link.classList.remove('active');
+                                if (link.getAttribute('href') === `#${id}`) {
+                                    link.classList.add('active');
+                                }
+                            });
+                        }
+                    });
+                }
+
+                window.addEventListener('scroll', setActiveNavLink);
+                
+                // Initial check for active section
+                setActiveNavLink();
+
+                // Search functionality
+                searchIcon.addEventListener('click', () => {
+                    const searchOverlay = document.createElement('div');
+                    searchOverlay.className = 'search-overlay';
+                    
+                    const searchContent = document.createElement('div');
+                    searchContent.className = 'search-content';
+                    searchContent.innerHTML = `
+                        <i class="fas fa-times close-search"></i>
+                        <form>
+                            <input type="text" placeholder="Search the darkness...">
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </form>
+                    `;
+                    
+                    searchOverlay.appendChild(searchContent);
+                    document.body.appendChild(searchOverlay);
+                    
+                    // Focus search input
+                    setTimeout(() => {
+                        searchContent.querySelector('input').focus();
+                    }, 100);
+                    
+                    // Close search overlay
+                    searchContent.querySelector('.close-search').addEventListener('click', () => {
+                        document.body.removeChild(searchOverlay);
+                    });
+                    
+                    // Close on overlay click
+                    searchOverlay.addEventListener('click', (e) => {
+                        if(e.target === searchOverlay) {
+                            document.body.removeChild(searchOverlay);
+                        }
+                    });
+                });
+
+                // Video Controls
+                const video = document.querySelector('video');
+                const muteBtn = document.getElementById('mute-btn');
+                const unmuteBtn = document.getElementById('unmute-btn');
+
+                muteBtn.addEventListener('click', function() {
+                    video.muted = false;
+                    muteBtn.style.display = 'none';
+                    unmuteBtn.style.display = 'inline-block';
+                });
+
+                unmuteBtn.addEventListener('click', function() {
+                    video.muted = true;
+                    unmuteBtn.style.display = 'none';
+                    muteBtn.style.display = 'inline-block';
+                });
+
+                // FAQ Accordion
+                const faqItems = document.querySelectorAll('.faq-item');
+                
+                faqItems.forEach(item => {
+                    const question = item.querySelector('.faq-question');
+                    
+                    question.addEventListener('click', () => {
+                        const isActive = item.classList.contains('active');
+                        
+                        // Close all other items
+                        faqItems.forEach(otherItem => {
+                            otherItem.classList.remove('active');
+                        });
+                        
+                        // Toggle current item
+                        if (!isActive) {
+                            item.classList.add('active');
+                        }
+                    });
+                });
+
+                // Profile Image Slider
+                const profileSection = document.querySelector('.profile-image');
+                const profileImages = profileSection.querySelectorAll('img');
+                const profileDots = profileSection.querySelectorAll('.profile-dot');
+                const prevBtn = profileSection.querySelector('.profile-prev');
+                const nextBtn = profileSection.querySelector('.profile-next');
+                let currentImage = 0;
+
+                function showImage(index) {
+                    profileImages.forEach(img => img.classList.remove('active'));
+                    profileDots.forEach(dot => dot.classList.remove('active'));
+                    profileImages[index].classList.add('active');
+                    profileDots[index].classList.add('active');
+                }
+
+                function nextImage() {
+                    currentImage = (currentImage + 1) % profileImages.length;
+                    showImage(currentImage);
+                }
+
+                function prevImage() {
+                    currentImage = (currentImage - 1 + profileImages.length) % profileImages.length;
+                    showImage(currentImage);
+                }
+
+                // Event Listeners
+                prevBtn.addEventListener('click', prevImage);
+                nextBtn.addEventListener('click', nextImage);
+
+                profileDots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => {
+                        currentImage = index;
+                        showImage(currentImage);
+                    });
+                });
+
+                // Auto slide every 5 seconds
+                setInterval(nextImage, 5000);
+            });
+        </script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/all.min.css">
+        <link href="css/style.css" rel="stylesheet">
+        
+</head>
+<body>
+        <!-- start header  -->
+         <header>
+            <div class="cont">
+                <a href="#" class="logo">
+                    <img src="image/logo.png" alt="logo" class="log">
+                </a>
+                <nav>
+                    <i class="fas fa-bars toggle-menu"></i>
+                    <ul>
+                        <li><a href="#home" class="active">Home</a></li>
+                        <li><a href="#inventory">inventory</a></li>
+                        <li><a href="#supporters">Supporters</a></li>
+                        <li><a href="#ask">Ask Me</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <div class="form">
+                        <i class="fas fa-search"></i>
+                    </div>
+                </nav>
+            </div>
+         </header>
+        <!-- end header  -->
+         <!-- start landing -->
+          <div class="landing" id="home">
+            <video autoplay loop muted plays-inline>
+                <source src="image/From KlickPin CF Sauron EDIT [LOTR] в 2025 г _ Фотографии профиля Властелин колец Винтажные роботы.mp4" type="video/mp4">
+            </video>
+            <div class="overlay">
+                <div class="text">
+                    <div class="content">
+                        <h2>Hello ShitPosters!
+                            Welcome To The "Darksite"
+                        </h2>
+                        <p>
+                           The Vip Pass is here to make your life easier
+                            and more enjoyable. With our exclusive membership,
+                            you can unlock a world of benefits and privileges that will enhance your experience like never before.
+                        </p>
+                    </div>
+                </div>
+                        <i class="fas fa-angle-right change-background fa-2x"></i>
+                        <i class="fas  fa-angle-left change-background fa-2x"></i>
+                        <ul class="bullets">
+                            <li></li>
+                            <li class="active"></li>
+                            <li></li>
+                        </ul>
+                        <div class="volume-controls">
+                            <i class="fa-solid fa-volume-xmark" id="mute-btn"></i>
+                            <i class="fa-solid fa-volume-high" id="unmute-btn"></i>
+                        </div>
+            </div>
+          </div>
+         <!-- end landing -->
+          <!-- start inventory  -->
+          
+          <div class="sec" id="inventory">
+            <div class="cont">
+            <div class="main-heading">
+                <h2>inventory</h2>
+                            <p>Discover a wide range of exclusive items carefully
+                            selected for our VIP members. 
+                From rare collectibles to premium digital assets, our inventory is designed to 
+                give you access to unique treasures that you won’t find anywhere else.</p>
+            </div>
+            <div class="invcont">
+                    <div class="box">
+                        <i class="fa-solid fa-crown"></i>
+                        <div class="text">
+                            <h3>Be Special</h3>
+                            <p>    Not everyone gets the crown… but you do. Own your throne.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <i class="fa-solid fa-money-check-dollar"></i>
+                        <div class="text">
+                            <h3>Low Cost</h3>
+                            <p>    Get the best value for your money with our affordable pricing plans.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <i class="fa-solid fa-ranking-star"></i>
+                        <div class="text">
+                            <h3>You Will Be In The Top</h3>
+                            <p> 
+                                You'll be among the elite, enjoying top-tier benefits and exclusive access reserved for our most valued members.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <i class="fa-solid fa-eye"></i>
+                        <div class="text">
+                            <h3>Get The Sauron Eye badge</h3>
+                            <p>    
+                                Show off your elite status with our exclusive Sauron Eye badge, a symbol of your VIP membership.
+                            </p>
+                        </div>
+                    </div>
+            </div>
+            </div>
+          </div>
+          <!-- end inventory  -->
+        <!-- start des  -->
+         <div class="des" id="supporters">
+            <div class="pol">
+                    <h2><span class="ww">Our</span> Top <span>VIP Supporters</span></h2>
+            </div>
+            <div class="image">
+                <div class="cont">
+                    <img src="image/d6c49cf0e4c1f5de83f4c2ac63e732c8.jpg" alt="des">
+                    <h2>sauron</h2>
+                    <p>The Lord Of The Unlived Land </p>
+                </div>
+                <div class="cont">
+                    <img src="image/15cee09434f041e9f6e3b2db55b166c2.jpg" alt="des">
+                    <h2>Stalker</h2>
+                    <p>You Will Find Him 24h online </p>
+                </div>
+                <div class="cont">
+                    <img src="image/daf8fb07dce670b39715bb2b5d4b7b6a.jpg" alt="des">
+                    <h2>Dark Lord</h2>
+                    <p>The Lord Of The Galaxy</p>
+                </div>
+                <div class="cont">
+                    <img src="image/001922bcd4fc0d3dd2c28f126c3bc015.jpg" alt="des">
+                    <h2>The Gentleman</h2>
+                    <p>He Is The Real Life Porn Inventor</p>
+                </div>
+            </div>
+            <div class="text">
+                <div class="content">
+                    <h3>About Our Dark Lords</h3>
+                    <p><strong>Sauron - The Dark Lord</strong><br>
+                    The most feared entity in Middle-earth, master of the One Ring and ruler of Mordor. His presence alone strikes terror into the hearts of mortals.</p>
+                    
+                    <p><strong>The Stalker - The Eternal Watcher</strong><br>
+                    A mysterious figure whose vigilance never wavers. His dedication to watching over the dark realm is unmatched, maintaining his post 24/7.</p>
+                    
+                    <p><strong>Dark Lord - The Galactic Emperor</strong><br>
+                    Commander of vast cosmic forces, this being's influence extends beyond earthly bounds into the very fabric of the galaxy.</p>
+                    
+                    <p><strong>The Gentleman - The Dark Innovator</strong><br>
+                    A sophisticated entity whose creations have revolutionized the darker aspects of existence. His innovations are both feared and revered.</p>
+                </div> 
+         </div>
+        </div>
+           
+        <!-- end des  -->
+
+<!-- start ask-me -->
+<div class="ask-me" id="ask">
+    <div class="cont">
+        <div class="main-heading">
+            <h2>Frequently Asked Questions</h2>
+            <p>Discover the answers to the most common inquiries about our dark realm. Let the shadows guide you.</p>
+        </div>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>What are the benefits of joining the Dark Side?</h3>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>By joining our ranks, you'll gain access to exclusive dark powers, premium content, 24/7 support from our Dark Lords, and special badges that mark your elevated status in our community.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How do I upgrade my membership level?</h3>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Ascending through our ranks is simple. Choose a higher tier in our pricing section, complete the ritual payment, and your dark powers will be instantly upgraded.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Is the Dark Site available 24/7?</h3>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, our realm never sleeps. The Dark Site and all its features are available around the clock, just like our eternal watchers.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How do I contact the Dark Lords directly?</h3>
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Premium members can reach our Dark Lords through the shadow communication system. Basic members can submit their queries through our contact form.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ask-custom">
+            <h3>Still have questions?</h3>
+            <p>Our Dark Lords are ready to assist you</p>
+            <a href="#contact" class="dark-btn">Contact Us</a>
+        </div>
+    </div>
+</div>
+<!-- end ask-me -->
+
+<!-- start pricing -->
+<div class="pricing" id="pricing">
+    <div class="cont">
+        <div class="main-heading">
+            <h2>Pricing</h2>
+            <p>Choose your path to darkness. Each tier offers unique benefits and privileges designed to enhance your experience.</p>
+        </div>
+        <div class="plans">
+            <div class="plan">
+                <div class="head">
+                    <h3>Shadow Walker</h3>
+                    <span>19</span>
+                </div>
+                <ul>
+                    <li>Basic Dark Powers</li>
+                    <li>24/7 Support</li>
+                    <li>Access to Common Areas</li>
+                    <li>Standard Badge</li>
+                    <li>1 Month Membership</li>
+                </ul>
+                <div class="foot">
+                    <a href="#">Choose Plan</a>
+                </div>
+            </div>
+            <div class="plan featured">
+                <div class="head">
+                    <h3>Dark Lord</h3>
+                    <span>49</span>
+                </div>
+                <ul>
+                    <li>Advanced Dark Powers</li>
+                    <li>Priority Support</li>
+                    <li>Full Access All Areas</li>
+                    <li>Premium Badge</li>
+                    <li>3 Months Membership</li>
+                </ul>
+                <div class="foot">
+                    <a href="#">Choose Plan</a>
+                </div>
+            </div>
+            <div class="plan">
+                <div class="head">
+                    <h3>Supreme Being</h3>
+                    <span>99</span>
+                </div>
+                <ul>
+                    <li>Ultimate Dark Powers</li>
+                    <li>24/7 VIP Support</li>
+                    <li>Exclusive Access</li>
+                    <li>Legendary Badge</li>
+                    <li>6 Months Membership</li>
+                </ul>
+                <div class="foot">
+                    <a href="#">Choose Plan</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end pricing -->
+
+<!-- start contact -->
+<div class="contact" id="contact">
+    <div class="cont">
+        <div class="main-heading">
+            <h2>Connect With Me</h2>
+            <p>Join my journey through the shadows. Follow and reach out through these dark channels.</p>
+        </div>
+        <div class="content">
+            <div class="contact-info">
+                <div class="profile-section">
+                    <div class="profile-image">
+                        <img src="image/WhatsApp Image 2025-09-27 at 14.01.20_a651dd87.jpg" alt="Profile Image" class="active">
+                        <img src="image/3b6229f0cfb9f5d7dac282727bce6753.jpg" alt="Profile Image 2">
+                        <img src="image/WhatsApp Image 2025-09-27 at 14.00.49_5e847400.jpg" alt="Profile Image 3">
+                        <img src="image/WhatsApp Image 2025-09-27 at 14.00.23_3429e888.jpg" alt="Profile Image 4">
+                        <div class="profile-nav profile-prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                        <div class="profile-nav profile-next">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="profile-controls">
+                            <div class="profile-dot active"></div>
+                            <div class="profile-dot"></div>
+                            <div class="profile-dot"></div>
+                            <div class="profile-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="social-info">
+                    <div class="social-box">
+                        <a href="https://www.facebook.com/rommel.tarek.9/" class="social-link">
+                            <i class="fab fa-facebook"></i>
+                            <div class="text">
+                                <h4>Facebook</h4>
+                                <p>@Rommel</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="social-box">
+                        <a href="https://www.instagram.com/rommel.__.rizzer/" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                            <div class="text">
+                                <h4>Instagram</h4>
+                                <p>@rommel.__.rizzer</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="social-box">
+                        <a href="#" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                            <div class="text">
+                                <h4>WhatsApp</h4>
+                                <p>+2010000000</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="social-box">
+                        <a href="#" class="social-link">
+                            <i class="fas fa-envelope"></i>
+                            <div class="text">
+                                <h4>Email</h4>
+                                <p>Rommel@gamil.com</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end contact -->
+
+<!-- start footer -->
+<footer>
+    <div class="cont">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="image/logo.png" alt="Dark Site Logo" class="footer-logo">
+                <p>Join the elite. Embrace the darkness.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Inventory</a></li>
+                    <li><a href="#">Supporters</a></li>
+                    <li><a href="#">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Newsletter</h4>
+                <p>Subscribe to receive dark updates</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email">
+                    <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Dark Site. All rights reserved to the shadows.</p>
+        </div>
+    </div>
+</footer>
+<!-- end footer -->
+
+</body>
+</html>
